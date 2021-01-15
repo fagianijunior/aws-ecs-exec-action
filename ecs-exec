@@ -63,7 +63,7 @@ esac
 
 ## VPC/Subnet Json
 # Ideally we would lookup a default vpc first
-ECS_SUBNETS_JSON="$(aws ec2 describe-subnets --filters Name=tag:Name,Values=*ecs-cluster-private*)"
+ECS_SUBNETS_JSON="$(aws ec2 describe-subnets --filters Name=tag:Name,Values=*growthhackers-*/Public*)"
 ECS_SUBNETS="$(echo "${ECS_SUBNETS_JSON}"| jq -r .Subnets[].SubnetId)"
 ECS_SUBNETS_JSON='{"awsvpcConfiguration": {"assignPublicIp":"DISABLED","subnets": ['
 for subnet in ${ECS_SUBNETS}; do
