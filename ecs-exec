@@ -74,10 +74,22 @@ ECS_SUBNETS_JSON="${ECS_SUBNETS_JSON%,}]}}"
 # FIXME do we need the VPC ID?
 #aws --profile terraform@apfm-dev ec2 describe-vpcs | jq -r '.Vpcs[0].VpcId'
 
+
+# Gambiarra master
+# Melhorar recebendo o container name como argumento
+IFS=- read var1 var2 var3 var4 var5 <<< $ECS_TASK
+
+if [ -z "$var5" ]; then
+  CONTAINER_NAME="${var1}-${var2}-${var4}"
+else
+  CONTAINER_NAME="${var1}-${var2}-${var3}-${var5}"
+fi
+
+
 ## Command Override Json
 # Converts the shell arg list into a json list
 ECS_CMD_JSON='{"containerOverrides": [{'
-ECS_CMD_JSON="${ECS_CMD_JSON} \"name\":\"${ECS_TASK%%:*}\""
+ECS_CMD_JSON="${ECS_CMD_JSON} \"name\":\"${CONTAINER_NAME}\""
 if test "$#" -gt '0'; then
 	ECS_CMD_JSON="${ECS_CMD_JSON}, \"command\":["
 	for arg; do ECS_CMD_JSON="${ECS_CMD_JSON}\"${arg}\",";done
